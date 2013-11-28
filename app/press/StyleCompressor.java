@@ -8,6 +8,8 @@ import java.io.Writer;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.IOUtils;
+
 import press.io.CompressedFile;
 import press.io.FileIO;
 import com.yahoo.platform.yui.compressor.CssCompressor;
@@ -22,25 +24,31 @@ public class StyleCompressor extends Compressor {
 
     @Override
     public void compress(File sourceFile, Writer out, boolean compress) throws IOException {
-        Reader in;
+        Reader in = null;
+        
+        try {
+            // If it's a less file, use the less engine
+            if (isLess(sourceFile.getName())) {
+                // Note that the compress parameter doesn't actually seem to do
+                // much here, not sure why
+                String css = lessEngine.get(sourceFile, compress);
+                in = new StringReader(css);
+            } else {
+                in = FileIO.getReader(sourceFile);
+            }
 
-        // If it's a less file, use the less engine
-        if (isLess(sourceFile.getName())) {
-            // Note that the compress parameter doesn't actually seem to do
-            // much here, not sure why
-            String css = lessEngine.get(sourceFile, compress);
-            in = new StringReader(css);
-        } else {
-            in = FileIO.getReader(sourceFile);
-        }
-
-        if (compress) {
-            // Compress the CSS
-            CssCompressor compressor = new CssCompressor(in);
-            compressor.compress(out, PluginConfig.css.lineBreak);
-        } else {
-            // If the file should not be compressed, just copy it
-            FileIO.write(in, out);
+            if (compress) {
+                // Compress the CSS
+                CssCompressor compressor = new CssCompressor(in);
+                compressor.compress(out, PluginConfig.css.lineBreak);
+            } else {
+                // If the file should not be compressed, just copy it
+                FileIO.write(in, out);
+            }
+        } finally {
+            if (in != null) {
+                IOUtils.closeQuietly(in);
+            }
         }
     }
 

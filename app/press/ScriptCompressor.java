@@ -7,6 +7,7 @@ import java.io.Writer;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.IOUtils;
 import org.mozilla.javascript.ErrorReporter;
 import org.mozilla.javascript.EvaluatorException;
 
@@ -60,17 +61,25 @@ public class ScriptCompressor extends Compressor {
 
     @Override
     public void compress(File sourceFile, Writer out, boolean compress) throws IOException {
-        if (!compress) {
-            FileIO.write(FileIO.getReader(sourceFile), out);
-            return;
-        }
+        Reader in = null;
+        
+        try {
+            in = FileIO.getReader(sourceFile);
 
-        ErrorReporter errorReporter = new PressErrorReporter(sourceFile.getName());
-        Reader in = FileIO.getReader(sourceFile);
-        JavaScriptCompressor compressor = new JavaScriptCompressor(in, errorReporter);
-        compressor.compress(out, PluginConfig.js.lineBreak, PluginConfig.js.munge,
-                PluginConfig.js.warn, PluginConfig.js.preserveAllSemiColons,
-                PluginConfig.js.preserveStringLiterals);
+            if (compress) {
+                ErrorReporter errorReporter = new PressErrorReporter(sourceFile.getName());
+                JavaScriptCompressor compressor = new JavaScriptCompressor(in, errorReporter);
+                compressor.compress(out, PluginConfig.js.lineBreak, PluginConfig.js.munge,
+                        PluginConfig.js.warn, PluginConfig.js.preserveAllSemiColons,
+                        PluginConfig.js.preserveStringLiterals);
+            } else {
+                FileIO.write(in, out);
+            }
+        } finally {
+            if (in != null) {
+                IOUtils.closeQuietly(in);
+            }
+        }
     }
 
     @Override
