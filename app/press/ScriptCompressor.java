@@ -70,8 +70,8 @@ public class ScriptCompressor extends Compressor {
                 ErrorReporter errorReporter = new PressErrorReporter(sourceFile.getName());
                 JavaScriptCompressor compressor = new JavaScriptCompressor(in, errorReporter);
                 compressor.compress(out, PluginConfig.js.lineBreak, PluginConfig.js.munge,
-                        PluginConfig.js.warn, PluginConfig.js.preserveAllSemiColons,
-                        PluginConfig.js.preserveStringLiterals);
+                        PluginConfig.js.verbose, PluginConfig.js.preserveAllSemiColons,
+                        PluginConfig.js.disableOptimizations);
             } else {
                 FileIO.write(in, out);
             }

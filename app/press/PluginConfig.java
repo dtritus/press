@@ -58,9 +58,9 @@ public class PluginConfig {
             // Options for YUI JS compression
             public static final int lineBreak = -1;
             public static final boolean munge = true;
-            public static final boolean warn = false;
+            public static final boolean verbose = false;
             public static final boolean preserveAllSemiColons = false;
-            public static final boolean preserveStringLiterals = false;
+            public static final boolean disableOptimizations = false;
         }
 
         public static class css {
@@ -93,9 +93,9 @@ public class PluginConfig {
         // YUI JS compression options
         public static int lineBreak = DefaultConfig.js.lineBreak;
         public static boolean munge = DefaultConfig.js.munge;
-        public static boolean warn = DefaultConfig.js.warn;
+        public static boolean verbose = DefaultConfig.js.verbose;
         public static boolean preserveAllSemiColons = DefaultConfig.js.preserveAllSemiColons;
-        public static boolean preserveStringLiterals = DefaultConfig.js.preserveStringLiterals;
+        public static boolean disableOptimizations = DefaultConfig.js.disableOptimizations;
     }
 
     public static class css {
@@ -147,11 +147,11 @@ public class PluginConfig {
         css.lineBreak = ConfigHelper.getInt("press.yui.css.lineBreak", DefaultConfig.css.lineBreak);
         js.lineBreak = ConfigHelper.getInt("press.yui.js.lineBreak", DefaultConfig.js.lineBreak);
         js.munge = ConfigHelper.getBoolean("press.yui.js.munge", DefaultConfig.js.munge);
-        js.warn = ConfigHelper.getBoolean("press.yui.js.warn", DefaultConfig.js.warn);
+        js.verbose = ConfigHelper.getBoolean("press.yui.js.verbose", DefaultConfig.js.verbose);
         js.preserveAllSemiColons = ConfigHelper.getBoolean("press.yui.js.preserveAllSemiColons",
                 DefaultConfig.js.preserveAllSemiColons);
-        js.preserveStringLiterals = ConfigHelper.getBoolean("press.yui.js.preserveStringLiterals",
-                DefaultConfig.js.preserveStringLiterals);
+        js.disableOptimizations = ConfigHelper.getBoolean("press.yui.js.disableOptimizations",
+                DefaultConfig.js.disableOptimizations);
 
         // Add a trailing slash to directories, if necessary
         css.srcDir = addTrailingSlash(css.srcDir);
@@ -179,9 +179,9 @@ public class PluginConfig {
         PressLogger.trace("YUI css line break: %d", css.lineBreak);
         PressLogger.trace("YUI js line break: %d", js.lineBreak);
         PressLogger.trace("YUI js munge: %s", js.munge);
-        PressLogger.trace("YUI js warn: %s", js.warn);
+        PressLogger.trace("YUI js verbose: %s", js.verbose);
         PressLogger.trace("YUI js preserve all semi colons: %s", js.preserveAllSemiColons);
-        PressLogger.trace("YUI js preserve string literals: %s", js.preserveStringLiterals);
+        PressLogger.trace("YUI js disable optimizations: %s", js.disableOptimizations);
     }
 
     public static String addTrailingSlash(String dir) {
